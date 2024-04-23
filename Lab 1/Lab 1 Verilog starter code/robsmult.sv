@@ -18,12 +18,13 @@ module robsmult #(parameter WIDTH = 8)
 // instantiate control unit
 // SystemVerilog shortcut   .clk, is equiv. to .clk(clk),
 //   This may be used only when port name = external connection name 
-  robs_control_unit_micro cu(.clk(clk), .reset, zq, .zy, .zr, .c, .done);	
+  robs_control_unit_micro cu(.clk(clk), .reset, .zq, .zy, .zr, .c, .done);	
   
 // instantiate datapath
   robs_datapath #(.WIDTH(WIDTH)) dp(.clk, .reset, .multiplier, .multiplicand, .c, .product, .zq, .zr);
 	
   assign zy = ~multiplicand[WIDTH-1];	// what does this do?
+  // answer to above: zy is the inverse of the most significant bit of the multiplicand
 	
 endmodule
 

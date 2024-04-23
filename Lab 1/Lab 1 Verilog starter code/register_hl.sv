@@ -22,12 +22,13 @@ module register_hl # (parameter N = 16)
   //    0       1        0       inh              hold
   //    0       1        1       inh              inl
   //    0       0        0       hold             hold
-    if(clear)
-      out[N-1:N/2] <= 0;
-      out[N/2-1:0] <= 0;
-    else if(loadh)
-      out[N-1:N/2] <= inh;
-    else if(loadl)
-      out[N/2-1:0] <= inl;
+    if (clear) // if clear is true, set out to 0
+      out <= 0;
+    else begin // if clear is false
+      if (loadh) // if loadh is true, load inh
+        out[N-1:N/2] <= inh;
+      if (loadl) // if loadl is true, load inl
+        out[N/2-1:0] <= inl;
+    end
   end	
 endmodule
