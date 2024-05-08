@@ -12,7 +12,7 @@ module lab2__part1_tb #(parameter NS = 60, NH = 24);
 		Pulse    = 0;
   wire[6:0] S1disp, S0disp,
             M1disp, M0disp;
-  wire[6:0] H1disp, H0disp;
+  wire[6:0] , H0disp;
   wire Buzz;
 
   Top_Level #(.NS(NS),.NH(NH)) sd(.*);             // our DUT itself
@@ -25,7 +25,7 @@ module lab2__part1_tb #(parameter NS = 60, NH = 24);
 	#  7us  Timeset  = 0;
 //	force (.sd.Min = 'h5);
 //	release(.sd.Min);
-    display_tb_part1 (.seg_d(H1disp),
+    display_tb_part1 (.seg_d(),
     .seg_e(H0disp), .seg_f(M1disp),
     .seg_g(M0disp), .seg_h(S1disp),
     .seg_i(S0disp), .Buzz(Buzz));
@@ -34,12 +34,12 @@ module lab2__part1_tb #(parameter NS = 60, NH = 24);
 	#  1us  Minadv   = 1;
 	# 10us  Minadv   = 0;
 	#  1us  Alarmset = 0;
-    display_tb_part1 (.seg_d(H1disp),
+    display_tb_part1 (.seg_d(),
     .seg_e(H0disp), .seg_f(M1disp),
     .seg_g(M0disp), .seg_h(S1disp),
     .seg_i(S0disp), .Buzz(Buzz));
     for(int i=0; i<1640; i++) 
-	# 1us  display_tb_part1 (.seg_d(H1disp),
+	# 1us  display_tb_part1 (.seg_d(),
     .seg_e(H0disp), .seg_f(M1disp),
     .seg_g(M0disp), .seg_h(S1disp),
     .seg_i(S0disp),.Buzz(Buzz));
