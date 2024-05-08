@@ -10,8 +10,9 @@ module alarm(
 );
 
   always_comb
-    buzz = 
+    buzz = (tmin == amin) && (thrs == ahrs);
     /* fill in the guts:
 	buzz = 1 when tmin and thrs match amin and ahrs, respectively */
+
 
 endmodule
