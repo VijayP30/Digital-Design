@@ -29,33 +29,49 @@ module Top_Level #(parameter NS=60, NH=24)(
     .clk(Pulse), .rst(Reset), .en(!Timeset), .modulus(NS),
 // output ports    
     .ct_out(TSec), .ct_max(S_max));
+  assign TMen = (!Alarmset) && (S_max || (Timeset && Minadv)); // enable minutes counter
 
 // minutes counter -- runs at either 1/sec while being set or 1/60sec normally
   ct_mod_N Mct(
 // input ports
-    .clk(Pulse), .rst(Reset), .en(S_max || Minadv && !Alarmset), .modulus(NS),
+    .clk(Pulse), .rst(Reset), .en(TMen), .modulus(NS),
 // output ports
     .ct_out(TMin), .ct_max(TM_max));
+  assign THen = (!Alarmset) && ( (TM_max && S_max) || (Timeset && Hrsadv)); // enable hours counter
 
 // hours counter -- runs at either 1/sec or 1/60min
   ct_mod_N  Hct(
 // input ports
-	.clk(Pulse), .rst(Reset), .en((TM_max && S_max) || Hrsadv && !Alarmset), .modulus(NH),
+	.clk(Pulse), .rst(Reset), .en(THen), .modulus(NH),
 // output ports
   .ct_out(THrs), .ct_max(TH_max));
+  assign AMen = (!Timeset && Alarmset && Minadv); // enable alarm minute set registers
 
 // alarm set registers -- either hold or advance 1/sec while being set
   ct_mod_N Mreg(
 // input ports
-    .clk(Pulse), .rst(Reset), .en(Alarmset), .modulus(NS),   
+    .clk(Pulse), .rst(Reset), .en(AMen), .modulus(NS),   
 // output ports    
     .ct_out(AMin), .ct_max(AM_max));
+  assign AHen = (!Timeset && Alarmset && Hrsadv); // enable alarm hour set registers
 
   ct_mod_N  Hreg(
 // input ports
-    .clk(Pulse), .rst(Reset), .en(Alarmset), .modulus(NH),
+    .clk(Pulse), .rst(Reset), .en(AHen), .modulus(NH),
 // output ports    
     .ct_out(AHrs), .ct_max(AH_max));
+
+// MUX for time display
+always_comb begin
+  if (Alarmset) begin
+    Min = AMin;
+    Hrs = AHrs;
+  end
+  else begin
+    Min = TMin;
+    Hrs = THrs;
+  end
+end
 
 // display drivers (2 digits each, 6 digits total)
   lcd_int Sdisp(					  // seconds display
@@ -80,17 +96,5 @@ module Top_Level #(parameter NS=60, NH=24)(
   alarm a1(
     .tmin(TMin), .amin(AMin), .thrs(THrs), .ahrs(AHrs), .buzz(Buzz)
 	);
-
-// set the time and alarm registers
-always_comb begin
-  if (Alarmset) begin
-    Min = AMin;
-    Hrs = AHrs;
-  end
-  else begin
-    Min = TMin;
-    Hrs = THrs;
-  end
-end
 
 endmodule
