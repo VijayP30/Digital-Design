@@ -33,14 +33,14 @@ module Top_Level #(parameter NS=60, NH=24)(
 // minutes counter -- runs at either 1/sec while being set or 1/60sec normally
   ct_mod_N Mct(
 // input ports
-    .clk(Pulse), .rst(Reset), .en(S_max || Minadv), .modulus(NS),
+    .clk(Pulse), .rst(Reset), .en(S_max || Minadv && !Alarmset), .modulus(NS),
 // output ports
     .ct_out(TMin), .ct_max(TM_max));
 
 // hours counter -- runs at either 1/sec or 1/60min
   ct_mod_N  Hct(
 // input ports
-	.clk(Pulse), .rst(Reset), .en((TM_max && S_max) || Hrsadv), .modulus(NH),
+	.clk(Pulse), .rst(Reset), .en((TM_max && S_max) || Hrsadv && !Alarmset), .modulus(NH),
 // output ports
   .ct_out(THrs), .ct_max(TH_max));
 
