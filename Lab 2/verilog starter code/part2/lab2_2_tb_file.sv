@@ -5,11 +5,11 @@ module lab2_2_tb_file #(parameter NS = 60, NH = 24);
   bit   Reset    = 1,
         Timeset     ,
         Alarmset    ,
-		Minadv      ,
-		Hrsadv      ,
+        Minadv      ,
+        Hrsadv      ,
         Dayadv      ,
-		Alarmon  = 1,
-		Pulse       ;
+        Alarmon  = 1,
+        Pulse       ;
 
   wire[6:0] S1disp, S0disp,
             M1disp, M0disp,
@@ -71,7 +71,7 @@ module lab2_2_tb_file #(parameter NS = 60, NH = 24);
 	begin
 	  #400us Alarmset = 'b1;
 	         Minadv   = 'b1;
-			 Dayadv   = 'b1;
+			     Dayadv   = 'b1;
 	  #  3us Dayadv   = 'b0;	  // day 1
 	  #  5us Minadv   = 'b0;	  // min 08
 	         Alarmset = 'b0;
@@ -82,7 +82,7 @@ module lab2_2_tb_file #(parameter NS = 60, NH = 24);
   end 
   always begin
     #500ns Pulse = 'b1;
-	#500ns Pulse = 'b0;
+	  #500ns Pulse = 'b0;
   end
 
 endmodule

@@ -6,10 +6,10 @@ module lab2__part1_tb #(parameter NS = 60, NH = 24);
         Clk      = 0,
         Timeset  = 0,
         Alarmset = 0,
-		Minadv   = 0,
-		Hrsadv   = 0,
-		Alarmon  = 1,
-		Pulse    = 0;
+        Minadv   = 0,
+        Hrsadv   = 0,
+        Alarmon  = 1,
+        Pulse    = 0;
   wire[6:0] S1disp, S0disp,
             M1disp, M0disp;
   wire[6:0] , H0disp;
@@ -47,7 +47,7 @@ module lab2__part1_tb #(parameter NS = 60, NH = 24);
   end 
   always begin
     #500ns Pulse = 1;
-	#500ns Pulse = 0;
+	  #500ns Pulse = 0;
   end
 
 endmodule
