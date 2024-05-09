@@ -5,10 +5,10 @@ module Top_Level #(parameter NS=60, NH=24)(
   input Reset,
         Timeset, 	  // manual buttons
         Alarmset,	  //	(five total)
-		Minadv,
-		Hrsadv,
-		Alarmon,
-		Pulse,		  // digital clock, assume 1 cycle/sec.
+        Minadv,
+        Hrsadv,
+        Alarmon,
+        Pulse,		  // digital clock, assume 1 cycle/sec.
 // 6 decimal digit display (7 segment)
   output [6:0] S1disp, S0disp, 	   // 2-digit seconds display
                M1disp, M0disp, 
@@ -76,20 +76,20 @@ end
 // display drivers (2 digits each, 6 digits total)
   lcd_int Sdisp(					  // seconds display
     .bin_in    (TSec)  ,
-	.Segment1  (S1disp),
-	.Segment0  (S0disp)
+    .Segment1  (S1disp),
+    .Segment0  (S0disp)
 	);
 
   lcd_int Mdisp(
     .bin_in    (Min),
-	.Segment1  (M1disp),
-  .Segment0  (M0disp)
+    .Segment1  (M1disp),
+    .Segment0  (M0disp)
 	);
 
   lcd_int Hdisp(
     .bin_in    (Hrs),
-	.Segment1  (H1disp),
-  .Segment0  (H0disp)
+    .Segment1  (H1disp),
+    .Segment0  (H0disp)
 	);
 
 // buzz off :)	  make the connections
