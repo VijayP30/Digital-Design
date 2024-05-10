@@ -1,28 +1,48 @@
 // CSE140L  
 // see Structural Diagram in Lab2 assignment writeup
 // fill in missing connections and parameters
-module Top_Level #(parameter NS=60, NH=24, ND=7)(
+module Top_Level #(parameter NS=60, NH=24, ND=7, NM=12)(
   input Reset,
         Timeset, 	  // manual buttons
         Alarmset,	  //	(five total)
 		Minadv,
 		Hrsadv,
     	Dayadv,
+  		Datadv,
+  		Monadv,
 		Alarmon,
 		Pulse,		  // digital clock, assume 1 cycle/sec.
 // 6 decimal digit display (7 segment)
   output [6:0] S1disp, S0disp, 	   // 2-digit seconds display
                M1disp, M0disp, 
                H1disp, H0disp,
-                       D0disp,   // for part 2
+                       D0disp,
+               N1disp, N0disp,
+               T1disp, T0disp,   // for part 2
   output logic Buzz);	           // alarm sounds
 // internal connections (may need more)
-  logic[6:0] TSec, TMin, THrs, TDays,     // clock/time 
-             AMin, AHrs, ADay;		   // alarm setting
-  logic[6:0] Min, Hrs, Days;
-  logic S_max, TM_max, TH_max, TD_max, // "carry out" from sec -> min, min -> hrs, hrs -> days
+  logic[6:0] TSec, TMin, THrs, TDays, TDate, TMonth,     // clock/time 
+             AMin, AHrs, ADay, Dates;		   // alarm setting
+  logic[6:0] Min, Hrs, Days, Date, Mon;
+  logic S_max, TM_max, TH_max, TD_max, TDate_Max, TMonth_Max, // "carry out" from sec -> min, min -> hrs, hrs -> days
         AM_max, AH_max, AD_max,
-        TMen, THen, AMen, AHen, TDen, ADen; 
+        TMen, THen, AMen, AHen, TDen, ADen, TDateen, TMonthen; 
+
+  always_comb case (TMonth) 
+      0 : Dates = 31;
+      1 : Dates = 29;
+      2 : Dates = 31;
+      3 : Dates = 30;
+      4 : Dates = 31;
+      5 : Dates = 30;
+      6 : Dates = 31;
+      7 : Dates = 31;
+      8 : Dates = 30;
+      9 : Dates = 31;
+      10 : Dates = 30;
+      11 : Dates = 31;
+    default: Dates = -1;
+  endcase
 
 // (almost) free-running seconds counter	-- be sure to set modulus inputs on ct_mod_N modules
   ct_mod_N  Sct(
@@ -57,7 +77,21 @@ module Top_Level #(parameter NS=60, NH=24, ND=7)(
   .ct_out(TDays), .ct_max(TD_max));
   assign AMen = (!Timeset && Alarmset && Minadv); // enable alarm minute set registers
   
+  assign TDateen = (Timeset && Datadv) || (TH_max && TM_max && S_max);
+  ct_mod_N Datect(
+  // input ports
+    .clk(Pulse), .rst(Reset), .en(TDateen), 
+  // output ports
+    .ct_out(TDate), .ct_max(TDate_Max), .modulus(Dates) 
+);
+assign TMonthen = (Timeset && Monadv) || (TDate_Max && TH_max && TM_max && S_max);
 
+  ct_mod_N Monthct(
+  // input ports
+    .clk(Pulse), .rst(Reset), .en(TMonthen), 
+  // output ports
+    .ct_out(TMonth), .ct_max(TMonth_Max), .modulus(NM) 
+);
 
 // alarm set registers -- either hold or advance 1/sec while being set
   ct_mod_N Mreg(
@@ -94,6 +128,8 @@ always_comb begin
     Days = TDays;
   end
 end
+assign Date = !Alarmset ? (TDate + 1) : 0;
+assign Mon = !Alarmset ? (TMonth + 1) : 0;
 
 // display drivers (2 digits each, 6 digits total)
   lcd_int Sdisp(					  // seconds display
@@ -119,6 +155,18 @@ end
     .Segment1(),
     .Segment0(D0disp)
   );
+
+  lcd_int Tdisp(
+    .bin_in    (Date),
+    .Segment1  (T1disp),
+    .Segment0  (T0disp)
+	);
+
+  lcd_int Ndisp(
+    .bin_in    (Mon),
+    .Segment1  (N1disp),
+    .Segment0  (N0disp)
+	);
 
 // buzz off :)	  make the connections
   alarm a1(
