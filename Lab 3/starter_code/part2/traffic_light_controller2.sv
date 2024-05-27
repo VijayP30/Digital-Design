@@ -58,31 +58,23 @@ module traffic_light_controller(
 	next_ctr10 = 'd0;
 	case(present_state)
 /* ************* Fill in the case statements ************** */
-	  	GRRRR: begin /* fill in the guts
-			build on part 1
-			round-robin priority for four other direcions
-            */
-    		if (ctr5 == 9 || ctr10 == 4) begin
-				next_ctr5 = 0;
-        		next_ctr10 = 0;
-        		next_state = YRRRR;
-    		end else begin
-				next_ctr5 = (ctr5 != 0) ? ctr5 + 1 : (!s) ? 1 : ctr5;
-        		next_ctr10 = (ctr10 != 0) ? ctr10 + 1 : (s && sb) ? 1 : ctr10;
-        		next_state = GRRRR;
-    		end
-	    end      
-		RGRRR: begin                                    
-    		if (ctr5 == 9 || ctr10 == 4) begin
-				next_ctr5 = 0;
-        		next_ctr10 = 0;
-        		next_state = RYRRR;
-    		end else begin
-				next_ctr5 = (ctr5 != 0) ? ctr5 + 1 : (!e) ? 1 : ctr5;
-        		next_ctr10 = (ctr10 != 0) ? ctr10 + 1 : (e && eb) ? 1 : ctr10;
-        		next_state = RGRRR;
-        		
-    		end
+		GRRRR: begin
+    		next_state = (ctr5 == 4 || ctr10 == 9) ? YRRRR : GRRRR;
+    		next_ctr5 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+                		(ctr5 != 0) ? ctr5 + 1 : 
+                		(!s) ? 1 : next_ctr5;
+    		next_ctr10 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+                 		(ctr10 != 0) ? ctr10 + 1 : 
+                 		(s && sb) ? 1 : next_ctr10;
+		end
+		RGRRR: begin
+			next_state = (ctr5 == 4 || ctr10 == 9) ? RYRRR : RGRRR;
+			next_ctr5 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+						(ctr5 != 0) ? ctr5 + 1 : 
+						(!e) ? 1 : next_ctr5;
+			next_ctr10 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+						(ctr10 != 0) ? ctr10 + 1 : 
+						(e && eb) ? 1 : next_ctr10;
 		end
 	  	RYRRR: next_state = RZRRR;
 	  	RZRRR: next_state = RHRRR;
@@ -95,17 +87,13 @@ module traffic_light_controller(
                  		RHRRR;
 		end
 		RRGRR: begin
-    		if (ctr5 == 9 || ctr10 == 4) begin
-				next_ctr5 = 0;
-        		next_ctr10 = 0;
-        		next_state = RRYRR;
-        		
-    		end else begin
-				next_ctr5 = (ctr5 != 0) ? ctr5 + 1 : (!w) ? 1 : ctr5;
-        		next_ctr10 = (ctr10 != 0) ? ctr10 + 1 : (w && wb) ? 1 : ctr10;
-        		next_state = RRGRR;
-
-   			end
+			next_state = (ctr5 == 4 || ctr10 == 9) ? RRYRR : RRGRR;
+			next_ctr5 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+						(ctr5 != 0) ? ctr5 + 1 : 
+						(!w) ? 1 : next_ctr5;
+			next_ctr10 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+						(ctr10 != 0) ? ctr10 + 1 : 
+						(w && wb) ? 1 : next_ctr10;
 		end
 		YRRRR: next_state = ZRRRR;
 		ZRRRR: next_state = HRRRR;
@@ -128,16 +116,13 @@ module traffic_light_controller(
                  		RRHRR;
 		end
 		RRRGR: begin
-    		if (ctr5 == 9 || ctr10 == 4) begin
-				next_ctr5 = 0;
-        		next_ctr10 = 0;
-        		next_state = RRRYR;
-    		end else begin
-        		next_ctr5 = (ctr5 != 0) ? ctr5 + 1 : (!l) ? 1 : ctr5;
-        		next_ctr10 = (ctr10 != 0) ? ctr10 + 1 : (l && lb) ? 1 : ctr10;
-        		next_state = RRRGR;
-        		
-    		end
+			next_state = (ctr5 == 4 || ctr10 == 9) ? RRRYR : RRRGR;
+			next_ctr5 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+						(ctr5 != 0) ? ctr5 + 1 : 
+						(!l) ? 1 : next_ctr5;
+			next_ctr10 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+						(ctr10 != 0) ? ctr10 + 1 : 
+						(l && lb) ? 1 : next_ctr10;
 		end
 		RRRYR: next_state = RRRZR;
 		RRRZR: next_state = RRRHR;
@@ -150,15 +135,13 @@ module traffic_light_controller(
                  		RRRHR;
 		end
 		RRRRG: begin
-    		if (ctr5 == 9 || ctr10 == 4) begin
-				next_ctr5 = 0;
-        		next_ctr10 = 0;
-        		next_state = RRRRY;
-    		end else begin
-				next_ctr5 = (ctr5 != 0) ? ctr5 + 1 : (!n) ? 1 : ctr5;
-        		next_ctr10 = (ctr10 != 0) ? ctr10 + 1 : (n && nb) ? 1 : ctr10;
-        		next_state = RRRRG;
-    		end
+			next_state = (ctr5 == 4 || ctr10 == 9) ? RRRRY : RRRRG;
+			next_ctr5 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+						(ctr5 != 0) ? ctr5 + 1 : 
+						(!n) ? 1 : next_ctr5;
+			next_ctr10 = (ctr5 == 4 || ctr10 == 9) ? 0 : 
+						(ctr10 != 0) ? ctr10 + 1 : 
+						(n && nb) ? 1 : next_ctr10;
 		end
 		RRRRY: next_state = RRRRZ;
 		RRRRZ: next_state = RRRRH;
