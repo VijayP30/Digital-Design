@@ -31,7 +31,7 @@ dat_mem dm1(.clk, .write_en, .raddr, .waddr,
 
 // instantiate the LFSR core
 // need one for Lab 4; may want 6 for Lab 5
-lfsr6 l6(.clk, .en(LFSR_en), .init,
+lfsr6 l6(.clk, .en(LFSR_en), .init(load_LFSR),
          .taps, .start, .state(LFSR));
 
 logic[7:0] ct;                  // your program counter
@@ -109,9 +109,18 @@ Watch how the testbench performs Prog. 4. You will be doing the same
 operation, but at a more detailed, hardware level, instead of at the 
 higher level the testbench uses.       
 */
-	     end
+      write_en = 'b1;
+      LFSR_en = 'b1;
+      waddr = 'd57+ct;
+      raddr = ct-'d6-pre_len;
+      if (ct < pre_len+6) begin
+          data_in = {2'b00, LFSR} ^ 8'b01011111;
+      end else begin
+          data_in = {2'b01, LFSR ^ data_out[5:0]};
+      end
+    end
   endcase
-end 
+end
 
 
 // load control registers from dat_mem 
@@ -128,6 +137,6 @@ always @(posedge clk)
    This may be more or fewer clock cycles than mine. 
    Test bench waits for a done flag, so generate one at some time.
 */
-assign done = &ct[5:0];
+assign done = &ct[6:0];
 
 endmodule
