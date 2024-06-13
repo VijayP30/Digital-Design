@@ -5,7 +5,7 @@
 // Test bench first runs lab 4 equivalent to create an encrypted message
 // Restrict lengh of _ preamble
 // Change: delete leading _ from message as well as in preamble proper
-module Lab_5b_tb                ;
+module Lab_5c_tb                ;
   logic       clk               ;		   // advances simulation step-by-step
   logic       init              ;          // init (reset, start) command to DUT
   logic       wr_en             ;          // DUT memory core write enable
